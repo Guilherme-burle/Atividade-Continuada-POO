@@ -1,54 +1,52 @@
 package br.edu.cs.poo.ac.ordem.entidades;
 
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-@AllArgsConstructor
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
-
+@AllArgsConstructor
 public class OrdemServico implements Serializable {
 
-	private Cliente cliente;
-	private PrecoBase precoBase;
-	private Notebook notebook;
-	private Desktop desktop;
-	private LocalDateTime dataHoraAbertura;
-	private int prazoEmDias;
-	private double valor;
+    private Cliente cliente;
+    private PrecoBase precoBase;
+    private Notebook notebook;
+    private Desktop desktop;
+    private LocalDateTime dataHoraAbertura;
+    private int prazoEmDias;
+    private double valor;
 
-	public LocalDate getDataEstimadaEntrega() {
+    public LocalDate getDataEstimadaEntrega() {
+        return this.dataHoraAbertura.toLocalDate().plusDays(this.prazoEmDias);
+    }
 
-		LocalDate dataAbertura = dataHoraAbertura.toLocalDate();
+    public String getNumero() {
+        String tipoEquipamento;
+        if (this.notebook != null) {
+            tipoEquipamento = this.notebook.getIdTipo();
+        } else if (this.desktop != null) {
+            tipoEquipamento = this.desktop.getIdTipo();
+        } else {
+            tipoEquipamento = "ND";
+        }
 
-		return dataAbertura.plusDays(prazoEmDias);
-	}
+        String ano = String.valueOf(this.dataHoraAbertura.getYear());
+        String mes = String.format("%02d", this.dataHoraAbertura.getMonthValue());
+        String dia = String.format("%02d", this.dataHoraAbertura.getDayOfMonth());
+        String hora = String.format("%02d", this.dataHoraAbertura.getHour());
+        String minuto = String.format("%02d", this.dataHoraAbertura.getMinute());
 
-	public String getNumero() {
+        String documentoCliente = this.cliente.getCpfCnpj();
 
-		String concatenacao = "";
-		if (notebook != null) {
-			concatenacao += notebook.getIdTipo();
-		} else{
-			concatenacao += desktop.getIdTipo();
-		}
-
-	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
-	    concatenacao += dataHoraAbertura.format(formatter);
-
-		if (cliente.getCpfCnpj().length() > 11) {
-			concatenacao += cliente.getCpfCnpj();
-		} else {
-			concatenacao += "000" + cliente.getCpfCnpj();
-		}
-
-		return concatenacao;
-	}
-
+        if (documentoCliente.length() > 11) {
+            return tipoEquipamento + ano + mes + dia + hora + minuto + documentoCliente;
+        } else {
+            return tipoEquipamento + ano + mes + dia + hora + minuto + "000" + documentoCliente;
+        }
+    }
 }

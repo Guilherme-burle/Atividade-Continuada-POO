@@ -19,16 +19,16 @@ public class TesteValidadorCPFCNPJ {
     }
     @Test
     public void testeCPFInvalido() {
-    	testeCPFComDVInvalido();
-    	testeCPFComTamanhoInvalido();
-    	testeCPFNuloOuEmBranco();
+        testeCPFComDVInvalido();
+        testeCPFComTamanhoInvalido();
+        testeCPFNuloOuEmBranco();
     }
-    
+
     private void testeCPFComDVInvalido() {
         ResultadoValidacaoCPFCNPJ resultado = ValidadorCPFCNPJ.validarCPFCNPJ("52998224724");
         assertEquals(ErroValidacaoCPFCNPJ.CPF_CNPJ_COM_DV_INVALIDO, resultado.getErroValidacao());
     }
-    
+
     private void testeCPFComTamanhoInvalido() {
         ResultadoValidacaoCPFCNPJ resultado = ValidadorCPFCNPJ.validarCPFCNPJ("123456789");
         assertEquals(ErroValidacaoCPFCNPJ.CPF_CNPJ_NAO_E_CPF_NEM_CNPJ, resultado.getErroValidacao());
@@ -49,10 +49,10 @@ public class TesteValidadorCPFCNPJ {
     }
     @Test
     public void testeCNPJInvalido() {
-    	testeCNPJComDVInvalido();
-    	testeCNPJComTamanhoInvalido();
-    	testeCNPJNuloOuEmBranco();
-    	testeEntradaQueNaoEhCPFNemCNPJ();
+        testeCNPJComDVInvalido();
+        testeCNPJComTamanhoInvalido();
+        testeCNPJNuloOuEmBranco();
+        testeEntradaQueNaoEhCPFNemCNPJ();
     }
 
     private void testeCNPJComDVInvalido() {
@@ -60,7 +60,7 @@ public class TesteValidadorCPFCNPJ {
         assertEquals(ErroValidacaoCPFCNPJ.CPF_CNPJ_COM_DV_INVALIDO, resultado.getErroValidacao());
     }
 
-    
+
     private void testeCNPJComTamanhoInvalido() {
         ResultadoValidacaoCPFCNPJ resultado = ValidadorCPFCNPJ.validarCPFCNPJ("123456789012");
         assertEquals(ErroValidacaoCPFCNPJ.CPF_CNPJ_NAO_E_CPF_NEM_CNPJ, resultado.getErroValidacao());

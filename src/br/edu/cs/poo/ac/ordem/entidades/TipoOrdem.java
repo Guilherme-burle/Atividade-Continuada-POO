@@ -1,14 +1,13 @@
 package br.edu.cs.poo.ac.ordem.entidades;
 
-import java.io.Serializable;
+public enum TipoOrdem {
 
-public enum TipoOrdem implements Serializable {
     MANUTENCAO(1, "Manutenção"),
     CONFIGURACAO(2, "Configuração"),
     UPGRADE(3, "Upgrade");
 
-    private int codigo;
-    private String nome;
+    private final int codigo;
+    private final String nome;
 
     private TipoOrdem(int codigo, String nome) {
         this.codigo = codigo;
@@ -16,23 +15,19 @@ public enum TipoOrdem implements Serializable {
     }
 
     public int getCodigo() {
-        return codigo;
+        return this.codigo;
     }
 
     public String getNome() {
-        return nome;
+        return this.nome;
     }
 
     public static TipoOrdem getTipoOrdem(int codigo) {
-
         for (TipoOrdem tipo : TipoOrdem.values()) {
-            if (codigo == tipo.getCodigo()) {
+            if (tipo.getCodigo() == codigo) {
                 return tipo;
             }
         }
-
-        return null;
-
+        throw new IllegalArgumentException("Código de ordem inválido: " + codigo);
     }
-
 }

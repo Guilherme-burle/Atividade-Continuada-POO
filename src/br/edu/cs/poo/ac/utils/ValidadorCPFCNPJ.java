@@ -2,117 +2,73 @@ package br.edu.cs.poo.ac.utils;
 
 public class ValidadorCPFCNPJ {
 
-	public static ResultadoValidacaoCPFCNPJ validarCPFCNPJ(String cpfCnpj) {
-		
-		boolean cpf = ValidadorCPFCNPJ.isCPF(cpfCnpj);
-		boolean cnpj = ValidadorCPFCNPJ.isCNPJ(cpfCnpj);
-		
-		ErroValidacaoCPFCNPJ tipoERRO = null;
+    private static final int TAMANHO_CPF = 11;
+    private static final int TAMANHO_CNPJ = 14;
 
-		
-		if(!cpf && !cnpj) tipoERRO = ErroValidacaoCPFCNPJ.CPF_CNPJ_NAO_E_CPF_NEM_CNPJ;
-		
-		else if(cpf) tipoERRO = validarCPF(cpfCnpj);
-		
-		else if(cnpj) tipoERRO = validarCNPJ(cpfCnpj);
-		
-		else tipoERRO = ErroValidacaoCPFCNPJ.CPF_CNPJ_NAO_E_CPF_NEM_CNPJ;
-		
-		return new ResultadoValidacaoCPFCNPJ(cpf, cnpj, tipoERRO);
-		
-	}
-	
-	private static boolean isNumber(char c) {
-		return c >= '0' && c <= '9';
-	}
+    private static final int[] PESOS_CPF = {11, 10, 9, 8, 7, 6, 5, 4, 3, 2};
+    private static final int[] PESOS_CNPJ_1 = {5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
+    private static final int[] PESOS_CNPJ_2 = {6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2};
 
-	public static boolean isCPF(String valor) {
-		if(valor==null) return false;
-		if (valor.length() != 11)
-			return false;
-		for(int i = 0; i < 11; i++)
-			if (!isNumber(valor.charAt(i)))
-				return false;
-		return true;
-	}
+    public static ResultadoValidacaoCPFCNPJ validarCPFCNPJ(String cpfCnpj) {
+        if (StringUtils.estaVazia(cpfCnpj)) {
+            return new ResultadoValidacaoCPFCNPJ(false, false, ErroValidacaoCPFCNPJ.CPF_CNPJ_NAO_E_CPF_NEM_CNPJ);
+        }
 
-	public static boolean isCNPJ(String valor) {
-		if(valor==null) return false;
-		if (valor.length() != 14)
-			return false;
-		for(int i = 0; i < 14; i++)
-			if (!isNumber(valor.charAt(i)))
-				return false;
-		return true;
-	}
+        String apenasDigitos = cpfCnpj.replaceAll("\\D+", "");
 
-	public static ErroValidacaoCPFCNPJ validarCPF(String cpf) {
-		
-		if (StringUtils.estaVazia(cpf))return ErroValidacaoCPFCNPJ.CPF_CNPJ_NULO_OU_BRANCO;
-		
-		if(!isDigitoVerificadorValidoCPF(cpf)) return ErroValidacaoCPFCNPJ.CPF_CNPJ_COM_DV_INVALIDO;
-		
-		if(!cpf.matches("\\d+")) return ErroValidacaoCPFCNPJ.CPF_CNPJ_COM_CARACTERES_INVALIDOS;
-		
-		return null;
-	}
-	
-	public static ErroValidacaoCPFCNPJ validarCNPJ(String cnpj) {
-		
-		//if(cnpj==null) return ErroValidacaoCPFCNPJ.CPF_CNPJ_NULO_OU_BRANCO;
-		
-		if (StringUtils.estaVazia(cnpj))return ErroValidacaoCPFCNPJ.CPF_CNPJ_NULO_OU_BRANCO;
-		
-		//if(cnpj==null || cnpj.isBlank() || cnpj.isEmpty()) return ErroValidacaoCPFCNPJ.CPF_CNPJ_NULO_OU_BRANCO;
-		
-		if(!isDigitoVerificadorValidoCNPJ(cnpj)) return ErroValidacaoCPFCNPJ.CPF_CNPJ_COM_DV_INVALIDO;
-		
-		if(!cnpj.matches("\\d+")) return ErroValidacaoCPFCNPJ.CPF_CNPJ_COM_CARACTERES_INVALIDOS;
-		
-		return null;
-		
-	}
+        if (apenasDigitos.length() == TAMANHO_CPF) {
+            return validarCPF(apenasDigitos);
+        } else if (apenasDigitos.length() == TAMANHO_CNPJ) {
+            return validarCNPJ(apenasDigitos);
+        } else {
+            return new ResultadoValidacaoCPFCNPJ(false, false, ErroValidacaoCPFCNPJ.CPF_CNPJ_NAO_E_CPF_NEM_CNPJ);
+        }
+    }
 
-	private static boolean isDigitoVerificadorValidoCPF(String cpf) {
-		String numeros = cpf.replaceAll("\\D", "");
-		int soma = 0;
-		for (int i = 0, peso = 10; i < 9; i++, peso--) {
-			soma += (numeros.charAt(i) - '0') * peso;
-		}
-		int r = soma % 11;
-		int d1 = (r < 2) ? 0 : 11 - r;
+    private static ResultadoValidacaoCPFCNPJ validarCPF(String cpf) {
+        if (temTodosDigitosIguais(cpf)) {
+            return new ResultadoValidacaoCPFCNPJ(false, false, ErroValidacaoCPFCNPJ.CPF_CNPJ_COM_DV_INVALIDO);
+        }
 
-		soma = 0;
-		for (int i = 0, peso = 11; i < 9; i++, peso--) {
-			soma += (numeros.charAt(i) - '0') * peso;
-		}
-		soma += d1 * 2;
-		r = soma % 11;
-		int d2 = (r < 2) ? 0 : 11 - r;
+        Integer dv1 = calcularDigito(cpf.substring(0, 9), PESOS_CPF);
+        Integer dv2 = calcularDigito(cpf.substring(0, 10), PESOS_CPF);
 
-		return d1 == (numeros.charAt(9) - '0') && d2 == (numeros.charAt(10) - '0');
-	}
+        if (cpf.equals(cpf.substring(0, 9) + dv1.toString() + dv2.toString())) {
+            return new ResultadoValidacaoCPFCNPJ(true, false, null);
+        } else {
+            return new ResultadoValidacaoCPFCNPJ(false, false, ErroValidacaoCPFCNPJ.CPF_CNPJ_COM_DV_INVALIDO);
+        }
+    }
 
-	private static boolean isDigitoVerificadorValidoCNPJ(String cnpj) {
-		String numeros = cnpj.replaceAll("\\D", "");
-		int[] w1 = { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
-		int[] w2 = { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
+    private static ResultadoValidacaoCPFCNPJ validarCNPJ(String cnpj) {
+        if (temTodosDigitosIguais(cnpj)) {
+            return new ResultadoValidacaoCPFCNPJ(false, false, ErroValidacaoCPFCNPJ.CPF_CNPJ_COM_DV_INVALIDO);
+        }
 
-		int soma = 0;
-		for (int i = 0; i < 12; i++) {
-			soma += (numeros.charAt(i) - '0') * w1[i];
-		}
-		int r = soma % 11;
-		int d1 = (r < 2) ? 0 : 11 - r;
+        Integer dv1 = calcularDigito(cnpj.substring(0, 12), PESOS_CNPJ_1);
+        Integer dv2 = calcularDigito(cnpj.substring(0, 13), PESOS_CNPJ_2);
 
-		soma = 0;
-		for (int i = 0; i < 12; i++) {
-			soma += (numeros.charAt(i) - '0') * w2[i];
-		}
-		soma += d1 * w2[12]; // peso 2
-		r = soma % 11;
-		int d2 = (r < 2) ? 0 : 11 - r;
+        if (cnpj.equals(cnpj.substring(0, 12) + dv1.toString() + dv2.toString())) {
+            return new ResultadoValidacaoCPFCNPJ(false, true, null);
+        } else {
+            return new ResultadoValidacaoCPFCNPJ(false, false, ErroValidacaoCPFCNPJ.CPF_CNPJ_COM_DV_INVALIDO);
+        }
+    }
 
-		return d1 == (numeros.charAt(12) - '0') && d2 == (numeros.charAt(13) - '0');
-	}
+    private static int calcularDigito(String str, int[] peso) {
+        int soma = 0;
+        for (int i = 0; i < str.length(); i++) {
+            soma += Integer.parseInt(str.substring(i, i + 1)) * peso[i + (peso.length - str.length())];
+        }
+        int resto = soma % 11;
+        return (resto < 2) ? 0 : (11 - resto);
+    }
+
+    private static boolean temTodosDigitosIguais(String str) {
+        char primeiro = str.charAt(0);
+        for(char c : str.toCharArray()){
+            if(c != primeiro) return false;
+        }
+        return true;
+    }
 }

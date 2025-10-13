@@ -5,17 +5,16 @@ import lombok.Setter;
 
 @Getter
 @Setter
+public class Desktop extends Equipamento {
 
-public class Desktop extends Equipamento{
+    private boolean ehServidor;
 
-	private boolean ehServido;
+    public Desktop(String serial, String descricao, boolean ehNovo, double valorEstimado, boolean ehServidor) {
+        super(serial, descricao, ehNovo, valorEstimado);
+        this.ehServidor = ehServidor;
+    }
 
-	public Desktop(String Serial, String descricao, boolean ehNovo, double valorEstimado, boolean ehServido) {
-		super(Serial, descricao, ehNovo, valorEstimado);
-		this.ehServido = ehServido;
-	}
-
-	public String getIdTipo() {
-		return "DE";
-	}
+    public String getIdTipo() {
+        return "DE";
+    }
 }

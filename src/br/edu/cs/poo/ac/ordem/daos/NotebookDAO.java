@@ -1,67 +1,62 @@
 package br.edu.cs.poo.ac.ordem.daos;
 
+import br.edu.cs.poo.ac.ordem.entidades.Notebook;
 import java.io.Serializable;
 
-import br.edu.cs.poo.ac.ordem.entidades.Notebook;
-
-
-
-//O identificador único, por objeto, de Notebook é a concatenação do retorno
-//do método getTipo com o atributo serial.
 public class NotebookDAO extends DAOGenerico {
 
-	public NotebookDAO() {
-		super(Notebook.class);
-	}
+    public NotebookDAO() {
+        super(Notebook.class);
+    }
 
-	private String getCodigo(Notebook Notebook) {
+    private String getIdentificador(Notebook notebook) {
+        return notebook.getIdTipo() + notebook.getSerial();
+    }
 
-		return Notebook.getIdTipo() + Notebook.getSerial();
-	}
+    public Notebook buscar(String identificador) {
+        return (Notebook) cadastroObjetos.buscar(identificador);
+    }
 
-	public Notebook buscar(String codigo) {
-		return (Notebook) cadastroObjetos.buscar(codigo);
-	}
+    public boolean incluir(Notebook notebook) {
+        String id = getIdentificador(notebook);
+        if (buscar(id) == null) {
+            cadastroObjetos.incluir(notebook, id);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	public boolean incluir(Notebook Notebook) {
-		if (buscar(getCodigo(Notebook)) == null) {
+    public boolean alterar(Notebook notebook) {
+        String id = getIdentificador(notebook);
+        if (buscar(id) != null) {
+            cadastroObjetos.alterar(notebook, id);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-			cadastroObjetos.incluir(Notebook, getCodigo(Notebook));
-			return true;
-		} else {
-			return false;
-		}
-	}
+    public boolean excluir(String identificador) {
+        if (buscar(identificador) != null) {
+            cadastroObjetos.excluir(identificador);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	public boolean alterar(Notebook Notebook) {
-		if (buscar(getCodigo(Notebook)) != null) {
-			cadastroObjetos.alterar(Notebook, getCodigo(Notebook));
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public boolean excluir(String codigo) {
-		if (buscar(codigo) != null) {
-			cadastroObjetos.excluir(codigo);
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public Notebook[] buscarTodos() {
-		Serializable[] ret = cadastroObjetos.buscarTodos();
-		Notebook[] retorno;
-		if (ret != null && ret.length > 0) {
-			retorno = new Notebook[ret.length];
-			for (int i = 0; i < ret.length; i++) {
-				retorno[i] = (Notebook) ret[i];
-			}
-		} else {
-			retorno = new Notebook[0];
-		}
-		return retorno;
-	}
+    public Notebook[] buscarTodos() {
+        Serializable[] ret = cadastroObjetos.buscarTodos();
+        Notebook[] notebooks;
+        if (ret != null && ret.length > 0) {
+            notebooks = new Notebook[ret.length];
+            for (int i = 0; i < ret.length; i++) {
+                notebooks[i] = (Notebook) ret[i];
+            }
+        } else {
+            notebooks = new Notebook[0];
+        }
+        return notebooks;
+    }
 }

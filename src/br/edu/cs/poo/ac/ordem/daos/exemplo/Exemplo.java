@@ -1,8 +1,9 @@
 package br.edu.cs.poo.ac.ordem.daos.exemplo;
 
+import br.edu.cs.poo.ac.utils.Registro;
 import java.io.Serializable;
 
-public class Exemplo implements Serializable {
+public class Exemplo implements Registro {
     private String codigo;
     private String nome;
     public Exemplo(String codigo, String nome) {
@@ -17,6 +18,11 @@ public class Exemplo implements Serializable {
         this.nome = nome;
     }
     public String getCodigo() {
+        return codigo;
+    }
+
+    @Override
+    public String getId() {
         return codigo;
     }
 }

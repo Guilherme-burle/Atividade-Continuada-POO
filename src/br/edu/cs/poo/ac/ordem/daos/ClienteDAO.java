@@ -1,55 +1,36 @@
 package br.edu.cs.poo.ac.ordem.daos;
 
 import br.edu.cs.poo.ac.ordem.entidades.Cliente;
-import java.io.Serializable;
+import br.edu.cs.poo.ac.utils.Registro;
 
 public class ClienteDAO extends DAOGenerico {
 
-    public ClienteDAO() {
-        super(Cliente.class);
+    @Override
+    public Class<?> getClasseEntidade() {
+        return Cliente.class;
     }
 
     public Cliente buscar(String cpfCnpj) {
-        return (Cliente) cadastroObjetos.buscar(cpfCnpj);
+        return (Cliente) super.buscar(cpfCnpj);
     }
 
     public boolean incluir(Cliente cliente) {
-        if (buscar(cliente.getCpfCnpj()) == null) {
-            cadastroObjetos.incluir(cliente, cliente.getCpfCnpj());
-            return true;
-        } else {
-            return false;
-        }
+        return super.incluir(cliente);
     }
 
     public boolean alterar(Cliente cliente) {
-        if (buscar(cliente.getCpfCnpj()) != null) {
-            cadastroObjetos.alterar(cliente, cliente.getCpfCnpj());
-            return true;
-        } else {
-            return false;
-        }
+        return super.alterar(cliente);
     }
 
     public boolean excluir(String cpfCnpj) {
-        if (buscar(cpfCnpj) != null) {
-            cadastroObjetos.excluir(cpfCnpj);
-            return true;
-        } else {
-            return false;
-        }
+        return super.excluir(cpfCnpj);
     }
 
     public Cliente[] buscarTodos() {
-        Serializable[] ret = cadastroObjetos.buscarTodos();
-        Cliente[] clientes;
-        if (ret != null && ret.length > 0) {
-            clientes = new Cliente[ret.length];
-            for (int i = 0; i < ret.length; i++) {
-                clientes[i] = (Cliente) ret[i];
-            }
-        } else {
-            clientes = new Cliente[0];
+        Registro[] registros = super.buscarTodos();
+        Cliente[] clientes = new Cliente[registros.length];
+        for (int i = 0; i < registros.length; i++) {
+            clientes[i] = (Cliente) registros[i];
         }
         return clientes;
     }

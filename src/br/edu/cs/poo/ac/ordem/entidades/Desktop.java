@@ -14,6 +14,7 @@ public class Desktop extends Equipamento {
         this.ehServidor = ehServidor;
     }
 
+    @Override
     public String getIdTipo() {
         return "DE";
     }

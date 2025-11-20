@@ -1,61 +1,36 @@
 package br.edu.cs.poo.ac.ordem.daos;
 
 import br.edu.cs.poo.ac.ordem.entidades.Desktop;
-import java.io.Serializable;
+import br.edu.cs.poo.ac.utils.Registro;
 
 public class DesktopDAO extends DAOGenerico {
 
-    public DesktopDAO() {
-        super(Desktop.class);
-    }
-
-    private String getIdentificador(Desktop desktop) {
-        return desktop.getIdTipo() + desktop.getSerial();
+    @Override
+    public Class<?> getClasseEntidade() {
+        return Desktop.class;
     }
 
     public Desktop buscar(String identificador) {
-        return (Desktop) cadastroObjetos.buscar(identificador);
+        return (Desktop) super.buscar(identificador);
     }
 
     public boolean incluir(Desktop desktop) {
-        String id = getIdentificador(desktop);
-        if (buscar(id) == null) {
-            cadastroObjetos.incluir(desktop, id);
-            return true;
-        } else {
-            return false;
-        }
+        return super.incluir(desktop);
     }
 
     public boolean alterar(Desktop desktop) {
-        String id = getIdentificador(desktop);
-        if (buscar(id) != null) {
-            cadastroObjetos.alterar(desktop, id);
-            return true;
-        } else {
-            return false;
-        }
+        return super.alterar(desktop);
     }
 
     public boolean excluir(String identificador) {
-        if (buscar(identificador) != null) {
-            cadastroObjetos.excluir(identificador);
-            return true;
-        } else {
-            return false;
-        }
+        return super.excluir(identificador);
     }
 
     public Desktop[] buscarTodos() {
-        Serializable[] ret = cadastroObjetos.buscarTodos();
-        Desktop[] desktops;
-        if (ret != null && ret.length > 0) {
-            desktops = new Desktop[ret.length];
-            for (int i = 0; i < ret.length; i++) {
-                desktops[i] = (Desktop) ret[i];
-            }
-        } else {
-            desktops = new Desktop[0];
+        Registro[] registros = super.buscarTodos();
+        Desktop[] desktops = new Desktop[registros.length];
+        for (int i = 0; i < registros.length; i++) {
+            desktops[i] = (Desktop) registros[i];
         }
         return desktops;
     }

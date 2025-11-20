@@ -14,6 +14,7 @@ public class Notebook extends Equipamento {
         this.carregaDadosSensiveis = carregaDadosSensiveis;
     }
 
+    @Override
     public String getIdTipo() {
         return "NO";
     }

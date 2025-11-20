@@ -1,10 +1,11 @@
 package br.edu.cs.poo.ac.ordem.entidades;
 
+import br.edu.cs.poo.ac.utils.Registro;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
 
-public class Cliente implements Serializable {
+public class Cliente implements Registro {
 
     private String cpfCnpj;
     private String nome;
@@ -46,5 +47,10 @@ public class Cliente implements Serializable {
         LocalDate dataAtual = LocalDate.now();
         Period periodo = Period.between(this.dataCadastro, dataAtual);
         return periodo.getYears();
+    }
+
+    @Override
+    public String getId() {
+        return cpfCnpj;
     }
 }

@@ -1,57 +1,36 @@
 package br.edu.cs.poo.ac.ordem.daos;
 
 import br.edu.cs.poo.ac.ordem.entidades.FechamentoOrdemServico;
-import java.io.Serializable;
+import br.edu.cs.poo.ac.utils.Registro;
 
 public class FechamentoOrdemServicoDAO extends DAOGenerico {
 
-    public FechamentoOrdemServicoDAO() {
-        super(FechamentoOrdemServico.class);
+    @Override
+    public Class<?> getClasseEntidade() {
+        return FechamentoOrdemServico.class;
     }
 
     public FechamentoOrdemServico buscar(String numeroOrdemServico) {
-        return (FechamentoOrdemServico) cadastroObjetos.buscar(numeroOrdemServico);
+        return (FechamentoOrdemServico) super.buscar(numeroOrdemServico);
     }
 
     public boolean incluir(FechamentoOrdemServico fechamento) {
-        String id = fechamento.getNumeroOrdemServico();
-        if (buscar(id) == null) {
-            cadastroObjetos.incluir(fechamento, id);
-            return true;
-        } else {
-            return false;
-        }
+        return super.incluir(fechamento);
     }
 
     public boolean alterar(FechamentoOrdemServico fechamento) {
-        String id = fechamento.getNumeroOrdemServico();
-        if (buscar(id) != null) {
-            cadastroObjetos.alterar(fechamento, id);
-            return true;
-        } else {
-            return false;
-        }
+        return super.alterar(fechamento);
     }
 
     public boolean excluir(String numeroOrdemServico) {
-        if (buscar(numeroOrdemServico) != null) {
-            cadastroObjetos.excluir(numeroOrdemServico);
-            return true;
-        } else {
-            return false;
-        }
+        return super.excluir(numeroOrdemServico);
     }
 
     public FechamentoOrdemServico[] buscarTodos() {
-        Serializable[] ret = cadastroObjetos.buscarTodos();
-        FechamentoOrdemServico[] fechamentos;
-        if (ret != null && ret.length > 0) {
-            fechamentos = new FechamentoOrdemServico[ret.length];
-            for (int i = 0; i < ret.length; i++) {
-                fechamentos[i] = (FechamentoOrdemServico) ret[i];
-            }
-        } else {
-            fechamentos = new FechamentoOrdemServico[0];
+        Registro[] registros = super.buscarTodos();
+        FechamentoOrdemServico[] fechamentos = new FechamentoOrdemServico[registros.length];
+        for (int i = 0; i < registros.length; i++) {
+            fechamentos[i] = (FechamentoOrdemServico) registros[i];
         }
         return fechamentos;
     }

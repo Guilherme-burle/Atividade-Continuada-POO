@@ -1,57 +1,36 @@
 package br.edu.cs.poo.ac.ordem.daos;
 
 import br.edu.cs.poo.ac.ordem.entidades.OrdemServico;
-import java.io.Serializable;
+import br.edu.cs.poo.ac.utils.Registro;
 
 public class OrdemServicoDAO extends DAOGenerico {
 
-    public OrdemServicoDAO() {
-        super(OrdemServico.class);
+    @Override
+    public Class<?> getClasseEntidade() {
+        return OrdemServico.class;
     }
 
     public OrdemServico buscar(String numero) {
-        return (OrdemServico) cadastroObjetos.buscar(numero);
+        return (OrdemServico) super.buscar(numero);
     }
 
     public boolean incluir(OrdemServico ordemServico) {
-        String numero = ordemServico.getNumero();
-        if (buscar(numero) == null) {
-            cadastroObjetos.incluir(ordemServico, numero);
-            return true;
-        } else {
-            return false;
-        }
+        return super.incluir(ordemServico);
     }
 
     public boolean alterar(OrdemServico ordemServico) {
-        String numero = ordemServico.getNumero();
-        if (buscar(numero) != null) {
-            cadastroObjetos.alterar(ordemServico, numero);
-            return true;
-        } else {
-            return false;
-        }
+        return super.alterar(ordemServico);
     }
 
     public boolean excluir(String numero) {
-        if (buscar(numero) != null) {
-            cadastroObjetos.excluir(numero);
-            return true;
-        } else {
-            return false;
-        }
+        return super.excluir(numero);
     }
 
     public OrdemServico[] buscarTodos() {
-        Serializable[] ret = cadastroObjetos.buscarTodos();
-        OrdemServico[] ordens;
-        if (ret != null && ret.length > 0) {
-            ordens = new OrdemServico[ret.length];
-            for (int i = 0; i < ret.length; i++) {
-                ordens[i] = (OrdemServico) ret[i];
-            }
-        } else {
-            ordens = new OrdemServico[0];
+        Registro[] registros = super.buscarTodos();
+        OrdemServico[] ordens = new OrdemServico[registros.length];
+        for (int i = 0; i < registros.length; i++) {
+            ordens[i] = (OrdemServico) registros[i];
         }
         return ordens;
     }

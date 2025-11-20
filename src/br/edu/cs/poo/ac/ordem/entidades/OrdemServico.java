@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import br.edu.cs.poo.ac.utils.Registro;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @AllArgsConstructor
-public class OrdemServico implements Serializable {
+public class OrdemServico implements Registro {
 
     private Cliente cliente;
     private PrecoBase precoBase;
@@ -48,5 +49,10 @@ public class OrdemServico implements Serializable {
         } else {
             return tipoEquipamento + ano + mes + dia + hora + minuto + "000" + documentoCliente;
         }
+    }
+
+    @Override
+    public String getId() {
+        return getNumero();
     }
 }
